@@ -42,25 +42,16 @@ async def lifespan(app: FastAPI):
 
     # Initialize UMS MCP client
     logger.info("Initializing UMS MCP client")
-    ums_mcp_client = await HttpMCPClient.create("http://localhost:8005/mcp")
+    ums_mcp_client = await HttpMCPClient.create(os.getenv("UMS_MCP_URL", "http://localhost:8005/mcp"))
     for tool in await ums_mcp_client.get_tools():
         tool_name = tool.get('function', {}).get('name')
         tools.append(tool)
         tool_name_client_map[tool_name] = ums_mcp_client
         logger.info("Registered UMS tool", extra={"tool_name": tool_name})
 
-    # Initialize Fetch MCP client
-    logger.info("Initializing Fetch MCP client")
-    fetch_mcp_client = await HttpMCPClient.create("https://remote.mcpservers.org/fetch/mcp")
-    for tool in await fetch_mcp_client.get_tools():
-        tool_name = tool.get('function', {}).get('name')
-        tools.append(tool)
-        tool_name_client_map[tool_name] = fetch_mcp_client
-        logger.info("Registered Fetch tool", extra={"tool_name": tool_name})
-
     # Initialize DuckDuckGo MCP client
     logger.info("Initializing DuckDuckGo MCP client")
-    duckduckgo_mcp_client = await StdioMCPClient.create(docker_image="mcp/duckduckgo:latest")
+    duckduckgo_mcp_client = await StdioMCPClient.create(docker_image="khshanovskyi/ddg-mcp-server:latest")
     for tool in await duckduckgo_mcp_client.get_tools():
         tool_name = tool.get('function', {}).get('name')
         tools.append(tool)
@@ -74,12 +65,12 @@ async def lifespan(app: FastAPI):
         raise ValueError("DIAL_API_KEY environment variable is required")
 
     # model = "gpt-4o"
-    model = "claude-3-7-sonnet@20250219"
+    model = os.getenv("ORCHESTRATION_MODEL", "gpt-4o")
     logger.info("Initializing DIAL client", extra={"model": model})
 
     dial_client = DialClient(
         api_key=dial_api_key,
-        endpoint="https://ai-proxy.lab.epam.com",
+        endpoint=os.getenv("DIAL_URL", "https://ai-proxy.lab.epam.com"),
         model=model,
         tools=tools,
         tool_name_client_map=tool_name_client_map
