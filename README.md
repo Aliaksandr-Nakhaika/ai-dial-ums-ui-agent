@@ -24,21 +24,21 @@ In this task you will need to implement an Agent with classical Tool use patten 
 
 ### If the task in the main branch is hard for you, then switch to the `with-detailed-description` branch
 
-1. Implement all TODO blocks in [http_mcp_client](agent/clients/http_mcp_client.py)
-2. Implement all TODO blocks in [stdio_mcp_client](agent/clients/stdio_mcp_client.py)
-3. Implement all TODO blocks in [dial_client](agent/clients/dial_client.py)
-4. Implement all TODO blocks in [conversation_manager](agent/conversation_manager.py)
-5. Write system prompt, at first it can be simple [prompts](agent/prompts.py)
-6. Implement all TODO blocks in [app](agent/app.py)
-7. Run [docker-compose](docker-compose.yml) with UMS, UMS MCP and Redis
-8. Start application [app](agent/app.py)
++ 1. Implement all TODO blocks in [http_mcp_client](agent/clients/http_mcp_client.py)
++ 2. Implement all TODO blocks in [stdio_mcp_client](agent/clients/stdio_mcp_client.py)
++ 3. Implement all TODO blocks in [dial_client](agent/clients/dial_client.py)
++ 4. Implement all TODO blocks in [conversation_manager](agent/conversation_manager.py)
++ 5. Write system prompt, at first it can be simple [prompts](agent/prompts.py)
++ 6. Implement all TODO blocks in [app](agent/app.py)
++ 7. Run [docker-compose](docker-compose.yml) with UMS, UMS MCP and Redis
++ 8. Start application [app](agent/app.py)
 9. Optional: You can test API with Postman
-10. Implement all TODO blocks in [index.html](index.html)
++ 10. Implement all TODO blocks in [index.html](index.html)
     - `loadConversations` function
     - `loadConversation`
     - `deleteConversation`
     - `streamResponse`
-11. Open in browser [index.html](index.html) and test your agent
++ 11. Open in browser [index.html](index.html) and test your agent
 
 ## Additional Task
 

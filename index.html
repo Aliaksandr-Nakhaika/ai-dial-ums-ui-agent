@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -138,7 +139,7 @@
             transition: left 0.3s;
         }
 
-        .sidebar.collapsed ~ .main-container .toggle-sidebar {
+        .sidebar.collapsed~.main-container .toggle-sidebar {
             left: 0;
         }
 
@@ -218,6 +219,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -262,10 +264,21 @@
             line-height: 1.3;
         }
 
-        .message-bubble h1 { font-size: 1.8em; }
-        .message-bubble h2 { font-size: 1.5em; }
-        .message-bubble h3 { font-size: 1.3em; }
-        .message-bubble h4 { font-size: 1.1em; }
+        .message-bubble h1 {
+            font-size: 1.8em;
+        }
+
+        .message-bubble h2 {
+            font-size: 1.5em;
+        }
+
+        .message-bubble h3 {
+            font-size: 1.3em;
+        }
+
+        .message-bubble h4 {
+            font-size: 1.1em;
+        }
 
         .message-bubble p {
             margin: 8px 0;
@@ -320,9 +333,13 @@
         }
 
         @keyframes typing {
-            0%, 60%, 100% {
+
+            0%,
+            60%,
+            100% {
                 transform: translateY(0);
             }
+
             30% {
                 transform: translateY(-10px);
             }
@@ -392,8 +409,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @media (max-width: 768px) {
@@ -419,111 +441,123 @@
         }
     </style>
 </head>
+
 <body>
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <span class="sidebar-title">Conversations</span>
-        <button class="new-chat-btn" id="newChatBtn">+ New Chat</button>
-    </div>
-    <div class="conversations-list" id="conversationsList">
-        <div class="loading-spinner">
-            <div class="spinner"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-title">Conversations</span>
+            <button class="new-chat-btn" id="newChatBtn">+ New Chat</button>
         </div>
-    </div>
-</div>
-
-<div class="main-container">
-    <button class="toggle-sidebar" id="toggleSidebar">☰</button>
-
-    <div class="chat-container">
-        <div class="chat-header">
-            🤖 AI Assistant
-        </div>
-        <div class="messages-container" id="messagesContainer">
-            <div class="empty-state">
-                <div class="empty-state-icon">💬</div>
-                <div class="empty-state-title">Start a New Conversation</div>
-                <div class="empty-state-text">
-                    Select a conversation from the sidebar or start a new one to begin chatting.
-                </div>
+        <div class="conversations-list" id="conversationsList">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
             </div>
         </div>
-        <div class="input-container">
-            <input
-                    type="text"
-                    id="messageInput"
-                    placeholder="Type your message..."
-                    autocomplete="off"
-            >
-            <button id="sendButton">Send</button>
+    </div>
+
+    <div class="main-container">
+        <button class="toggle-sidebar" id="toggleSidebar">☰</button>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                🤖 AI Assistant
+            </div>
+            <div class="messages-container" id="messagesContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">💬</div>
+                    <div class="empty-state-title">Start a New Conversation</div>
+                    <div class="empty-state-text">
+                        Select a conversation from the sidebar or start a new one to begin chatting.
+                    </div>
+                </div>
+            </div>
+            <div class="input-container">
+                <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+                <button id="sendButton">Send</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-    const API_URL = 'http://localhost:8011';
-    const messagesContainer = document.getElementById('messagesContainer');
-    const messageInput = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
-    const conversationsList = document.getElementById('conversationsList');
-    const newChatBtn = document.getElementById('newChatBtn');
-    const sidebar = document.getElementById('sidebar');
-    const toggleSidebar = document.getElementById('toggleSidebar');
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const API_URL = 'http://localhost:8011';
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const conversationsList = document.getElementById('conversationsList');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebar = document.getElementById('toggleSidebar');
 
-    let currentConversationId = null;
-    let conversationHistory = [];
-    let isStreaming = false;
+        let currentConversationId = null;
+        let conversationHistory = [];
+        let isStreaming = false;
 
-    marked.setOptions({
-        breaks: true,
-        gfm: true
-    });
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
 
-    toggleSidebar.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-    });
+        toggleSidebar.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
 
-    async function loadConversations() {
-        try {
-            //TODO:
-            // 1. Call `await fetch(`${API_URL}/conversations`)` and assign result as `response` variable
-            // 2. Get json from response `await response.json()` and assign to `conversations` variable
-            // 3. Clean conversations list `conversationsList.innerHTML = ''`
-            // 4. If `conversations` length is 0 then set `conversationsList.innerHTML` as
-            //    - '
-            //    <div style="text-align: center; padding: 20px; color: #6c757d;">
-            //        No conversations yet. Click "New Chat" to start!
-            //    </div>
-            //    '
-            //    otherwise iterate through `conversations` and call for each conversation the `addConversationToSidebar` function
-            throw new Error('Not implemented');
-        } catch (error) {
-            console.error('Error loading conversations:', error);
-            conversationsList.innerHTML = `
+        async function loadConversations() {
+            try {
+                //TODO:
+                // 1. Call `await fetch(`${API_URL}/conversations`)` and assign result as `response` variable
+                // 2. Get json from response `await response.json()` and assign to `conversations` variable
+                // 3. Clean conversations list `conversationsList.innerHTML = ''`
+                // 4. If `conversations` length is 0 then set `conversationsList.innerHTML` as
+                //    - '
+                //    <div style="text-align: center; padding: 20px; color: #6c757d;">
+                //        No conversations yet. Click "New Chat" to start!
+                //    </div>
+                //    '
+                //    otherwise iterate through `conversations` and call for each conversation the `addConversationToSidebar` function
+                // throw new Error('Not implemented');
+                const response = await fetch(`${API_URL}/conversations`);
+                const conversations = await response.json();
+
+                conversationsList.innerHTML = '';
+
+                if (conversations.length === 0) {
+                    conversationsList.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #6c757d;">
+                        No conversations yet. Click "New Chat" to start!
+                    </div>
+                `;
+                } else {
+                    conversations.forEach(conv => {
+                        addConversationToSidebar(conv);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+                conversationsList.innerHTML = `
                 <div style="text-align: center; padding: 20px; color: #dc3545;">
                     Error loading conversations
                 </div>
             `;
-        }
-    }
-
-    function addConversationToSidebar(conversation) {
-        const convElement = document.createElement('div');
-        convElement.className = 'conversation-item';
-        convElement.dataset.conversationId = conversation.id;
-
-        if (conversation.id === currentConversationId) {
-            convElement.classList.add('active');
+            }
         }
 
-        const date = new Date(conversation.updated_at);
-        const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        function addConversationToSidebar(conversation) {
+            const convElement = document.createElement('div');
+            convElement.className = 'conversation-item';
+            convElement.dataset.conversationId = conversation.id;
 
-        convElement.innerHTML = `
+            if (conversation.id === currentConversationId) {
+                convElement.classList.add('active');
+            }
+
+            const date = new Date(conversation.updated_at);
+            const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            convElement.innerHTML = `
             <div class="conversation-title">${conversation.title}</div>
             <div class="conversation-meta">
                 <span>${conversation.message_count || 0} messages</span>
@@ -534,51 +568,61 @@
             </div>
         `;
 
-        convElement.onclick = (e) => {
-            if (!e.target.classList.contains('delete-conversation')) {
-                loadConversation(conversation.id);
-            }
-        };
+            convElement.onclick = (e) => {
+                if (!e.target.classList.contains('delete-conversation')) {
+                    loadConversation(conversation.id);
+                }
+            };
 
-        conversationsList.appendChild(convElement);
-    }
-
-    async function loadConversation(conversationId) {
-        try {
-            //TODO:
-            // 1. Call `await fetch`${API_URL}/conversations/${conversationId}`);` and assign result as `response` variable
-            // 2. if respons is not ok then throw new Error('Conversation not found')
-            // 3. Get json from response `await response.json()` and assign to `conversation` variable
-            // 4. Set `currentConversationId` as `conversationId`
-            // 5. Set  `conversationHistory` as ` conversation.messages || []`
-            // 6. Call `updateActiveConversation` and `renderMessages` functions
-            throw new Error('Not implemented');
-        } catch (error) {
-            console.error('Error loading conversation:', error);
+            conversationsList.appendChild(convElement);
         }
-    }
 
-    function updateActiveConversation() {
-        document.querySelectorAll('.conversation-item').forEach(item => {
-            if (item.dataset.conversationId === currentConversationId) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
+        async function loadConversation(conversationId) {
+            try {
+                //TODO:
+                // 1. Call `await fetch`${API_URL}/conversations/${conversationId}`);` and assign result as `response` variable
+                // 2. if respons is not ok then throw new Error('Conversation not found')
+                // 3. Get json from response `await response.json()` and assign to `conversation` variable
+                // 4. Set `currentConversationId` as `conversationId`
+                // 5. Set  `conversationHistory` as ` conversation.messages || []`
+                // 6. Call `updateActiveConversation` and `renderMessages` functions
+                // throw new Error('Not implemented');
+                const response = await fetch(`${API_URL}/conversations/${conversationId}`);
+                if (!response.ok) throw new Error('Conversation not found');
+
+                const conversation = await response.json();
+
+                currentConversationId = conversationId;
+                conversationHistory = conversation.messages || [];
+
+                updateActiveConversation();
+                renderMessages();
+            } catch (error) {
+                console.error('Error loading conversation:', error);
             }
-        });
-    }
+        }
 
-    function renderMessages() {
-        messagesContainer.innerHTML = '';
+        function updateActiveConversation() {
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                if (item.dataset.conversationId === currentConversationId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
 
-        const validMessages = conversationHistory.filter(msg =>
-            (msg.role === 'user' || msg.role === 'assistant') &&
-            msg.content != null &&
-            msg.content.trim() !== ''
-        );
+        function renderMessages() {
+            messagesContainer.innerHTML = '';
 
-        if (validMessages.length === 0) {
-            messagesContainer.innerHTML = `
+            const validMessages = conversationHistory.filter(msg =>
+                (msg.role === 'user' || msg.role === 'assistant') &&
+                msg.content != null &&
+                msg.content.trim() !== ''
+            );
+
+            if (validMessages.length === 0) {
+                messagesContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-state-icon">💬</div>
                     <div class="empty-state-title">Start Chatting</div>
@@ -587,253 +631,317 @@
                     </div>
                 </div>
             `;
-            return;
+                return;
+            }
+
+            validMessages.forEach(msg => {
+                addMessage(msg.role, msg.content, false, msg.role === 'assistant');
+            });
         }
 
-        validMessages.forEach(msg => {
-            addMessage(msg.role, msg.content, false, msg.role === 'assistant');
-        });
-    }
-
-    async function deleteConversation(event, conversationId) {
-        //TODO:
-        // 1. Call `event.stopPropagation()`
-        // 2. Make pop-up with `if (!confirm('Are you sure you want to delete this conversation?')) {return;}`
-
-        try {
+        async function deleteConversation(event, conversationId) {
             //TODO:
-            // 1. Call `await fetch(`${API_URL}/conversations/${conversationId}`, {method: 'DELETE'});` as `response`
-            // 2. If response is not ok then throw new Error('Failed to delete conversation')
-            // 3. If `conversationId` equals `currentConversationId` then:
-            //      - set `currentConversationId` as null
-            //      - set `conversationHistory` as empty array
-            //      - call `renderMessages` func
-            // 4. Call `await loadConversations()`
-            throw new Error('Not implemented');
-        } catch (error) {
-            console.error('Error deleting conversation:', error);
+            // 1. Call `event.stopPropagation()`
+            // 2. Make pop-up with `if (!confirm('Are you sure you want to delete this conversation?')) {return;}`
+            event.stopPropagation();
+
+            if (!confirm('Are you sure you want to delete this conversation?')) {
+                return;
+            }
+
+            try {
+                //TODO:
+                // 1. Call `await fetch(`${API_URL}/conversations/${conversationId}`, {method: 'DELETE'});` as `response`
+                // 2. If response is not ok then throw new Error('Failed to delete conversation')
+                // 3. If `conversationId` equals `currentConversationId` then:
+                //      - set `currentConversationId` as null
+                //      - set `conversationHistory` as empty array
+                //      - call `renderMessages` func
+                // 4. Call `await loadConversations()`
+                // throw new Error('Not implemented');
+                const response = await fetch(`${API_URL}/conversations/${conversationId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Failed to delete conversation');
+
+                if (conversationId === currentConversationId) {
+                    currentConversationId = null;
+                    conversationHistory = [];
+                    renderMessages();
+                }
+
+                await loadConversations();
+            } catch (error) {
+                console.error('Error deleting conversation:', error);
+            }
         }
-    }
 
-    newChatBtn.addEventListener('click', () => {
-        currentConversationId = null;
-        conversationHistory = [];
-        renderMessages();
-        updateActiveConversation();
-    });
+        newChatBtn.addEventListener('click', () => {
+            currentConversationId = null;
+            conversationHistory = [];
+            renderMessages();
+            updateActiveConversation();
+        });
 
-    function addMessage(role, content, isTyping = false, isMarkdown = false) {
-        const emptyState = messagesContainer.querySelector('.empty-state');
-        if (emptyState) {
-            emptyState.remove();
-        }
+        function addMessage(role, content, isTyping = false, isMarkdown = false) {
+            const emptyState = messagesContainer.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
 
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${role}`;
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
 
-        if (isTyping) {
-            messageDiv.innerHTML = `
+            if (isTyping) {
+                messageDiv.innerHTML = `
                 <div class="typing-indicator">
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
             `;
-        } else {
-            const bubbleDiv = document.createElement('div');
-            bubbleDiv.className = 'message-bubble';
-
-            if (isMarkdown && role === 'assistant') {
-                bubbleDiv.innerHTML = marked.parse(content);
             } else {
-                bubbleDiv.textContent = content;
+                const bubbleDiv = document.createElement('div');
+                bubbleDiv.className = 'message-bubble';
+
+                if (isMarkdown && role === 'assistant') {
+                    bubbleDiv.innerHTML = marked.parse(content);
+                } else {
+                    bubbleDiv.textContent = content;
+                }
+
+                messageDiv.appendChild(bubbleDiv);
             }
 
-            messageDiv.appendChild(bubbleDiv);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            return messageDiv;
         }
 
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-        return messageDiv;
-    }
-
-    async function streamResponse(userMessage) {
-        //TODO:
-        // 1. Set `isStreaming` as true
-        // 2. Set `sendButton.disabled` as true
-        // 3. Create `usermsg` dict with:
-        //      - role: 'user'
-        //      - content: userMessage
-        // 4. Call func `addMessage` with role 'user' and `userMessage`
-        // 5. Create `typingIndicator` variable  from `addMessage('assistant', '', true)`
-        throw new Error('Not implemented');
-
-        try {
+        async function streamResponse(userMessage) {
             //TODO:
-            // 1. If not `currentConversationId` then we need to create a new conversation:
-            //      - Call `await fetch(`${API_URL}/conversations`, {method: 'POST', headers: {'Content-Type': 'application
-            //        /json'}, body: JSON.stringify({title: userMessage.length > 50 ? userMessage.substring(0, 50) + '...' : userMessage})})`
-            //        as `createConversationResponse`
-            //      - if createConversationResponse is not ok then throw new Error('Failed to create conversation')
-            //      - Get json from response `await createConversationResponse.json()` and assign to `newConversation` variable
-            //      - set `currentConversationId` as `newConversation.id`
-            //      - call `await loadConversations()`
-            // 2. Call `await fetch(`${API_URL}/conversations/${currentConversationId}/chat`, {method: 'POST', headers: {
-            //    'Content-Type': 'application/json'}, body: JSON.stringify({message: usermsg, stream: true})})` as `response`
-            // 3. If response is not ok then throw new Error(`HTTP error! status: ${response.status}`)
+            // 1. Set `isStreaming` as true
+            // 2. Set `sendButton.disabled` as true
+            // 3. Create `usermsg` dict with:
+            //      - role: 'user'
+            //      - content: userMessage
+            // 4. Call func `addMessage` with role 'user' and `userMessage`
+            // 5. Create `typingIndicator` variable  from `addMessage('assistant', '', true)`
+            // throw new Error('Not implemented');
+            isStreaming = true;
+            sendButton.disabled = true;
 
-            let assistantMessage = null;
-            let messageBubble = null;
-            let fullContent = '';
-            let currentChunkContent = '';
-            let receivedConversationId = false;
-            let hasReceivedContent = false;
-            let lastContentTime = Date.now();
-            let typingShown = false;
-            let currentTypingIndicator = null;
+            const usermsg = {
+                role: 'user',
+                content: userMessage
+            };
+            addMessage('user', userMessage);
 
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
+            const typingIndicator = addMessage('assistant', '', true);
 
-            const typingCheckInterval = setInterval(() => {
-                const timeSinceLastContent = Date.now() - lastContentTime;
+            try {
+                //TODO:
+                // 1. If not `currentConversationId` then we need to create a new conversation:
+                //      - Call `await fetch(`${API_URL}/conversations`, {method: 'POST', headers: {'Content-Type': 'application
+                //        /json'}, body: JSON.stringify({title: userMessage.length > 50 ? userMessage.substring(0, 50) + '...' : userMessage})})`
+                //        as `createConversationResponse`
+                //      - if createConversationResponse is not ok then throw new Error('Failed to create conversation')
+                //      - Get json from response `await createConversationResponse.json()` and assign to `newConversation` variable
+                //      - set `currentConversationId` as `newConversation.id`
+                //      - call `await loadConversations()`
+                // 2. Call `await fetch(`${API_URL}/conversations/${currentConversationId}/chat`, {method: 'POST', headers: {
+                //    'Content-Type': 'application/json'}, body: JSON.stringify({message: usermsg, stream: true})})` as `response`
+                // 3. If response is not ok then throw new Error(`HTTP error! status: ${response.status}`)
+                if (!currentConversationId) {
+                    const createResponse = await fetch(`${API_URL}/conversations`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            title: userMessage.length > 50 ? userMessage.substring(0, 50) + '...' : userMessage
+                        })
+                    });
 
-                if (!typingShown && timeSinceLastContent > 750 && hasReceivedContent && currentChunkContent.trim()) {
-                    typingShown = true;
-                    if (assistantMessage && currentChunkContent.trim()) {
-                        conversationHistory.push({
-                            role: 'assistant',
-                            content: currentChunkContent
-                        });
-                        fullContent += currentChunkContent;
-                        currentChunkContent = '';
-                        assistantMessage = null;
-                        messageBubble = null;
+                    if (!createResponse.ok) {
+                        throw new Error('Failed to create conversation');
                     }
-                    currentTypingIndicator = addMessage('assistant', '', true);
+
+                    const newConversation = await createResponse.json();
+                    currentConversationId = newConversation.id;
+
+                    await loadConversations();
                 }
-            }, 100);
 
-            while (true) {
-                const {done, value} = await reader.read();
+                const response = await fetch(`${API_URL}/conversations/${currentConversationId}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: usermsg,
+                        stream: true
+                    })
+                });
 
-                if (done) break;
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-                const chunk = decoder.decode(value);
-                const lines = chunk.split('\n');
+                let assistantMessage = null;
+                let messageBubble = null;
+                let fullContent = '';
+                let currentChunkContent = '';
+                let receivedConversationId = false;
+                let hasReceivedContent = false;
+                let lastContentTime = Date.now();
+                let typingShown = false;
+                let currentTypingIndicator = null;
 
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const data = line.slice(6);
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
 
-                        if (data === '[DONE]') {
-                            continue;
+                const typingCheckInterval = setInterval(() => {
+                    const timeSinceLastContent = Date.now() - lastContentTime;
+
+                    if (!typingShown && timeSinceLastContent > 750 && hasReceivedContent && currentChunkContent.trim()) {
+                        typingShown = true;
+                        if (assistantMessage && currentChunkContent.trim()) {
+                            conversationHistory.push({
+                                role: 'assistant',
+                                content: currentChunkContent
+                            });
+                            fullContent += currentChunkContent;
+                            currentChunkContent = '';
+                            assistantMessage = null;
+                            messageBubble = null;
                         }
+                        currentTypingIndicator = addMessage('assistant', '', true);
+                    }
+                }, 100);
 
-                        try {
-                            const parsed = JSON.parse(data);
+                while (true) {
+                    const { done, value } = await reader.read();
 
-                            if (parsed.conversation_id && !receivedConversationId) {
-                                receivedConversationId = true;
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6);
+
+                            if (data === '[DONE]') {
                                 continue;
                             }
 
-                            if (parsed.error) {
-                                throw new Error(parsed.error.message);
-                            }
+                            try {
+                                const parsed = JSON.parse(data);
 
-                            if (parsed.choices && parsed.choices[0].delta.content) {
-                                if (currentTypingIndicator) {
-                                    currentTypingIndicator.remove();
-                                    currentTypingIndicator = null;
-                                    typingShown = false;
+                                if (parsed.conversation_id && !receivedConversationId) {
+                                    receivedConversationId = true;
+                                    continue;
                                 }
 
-                                if (!assistantMessage) {
-                                    typingIndicator.remove();
-                                    assistantMessage = addMessage('assistant', '');
-                                    messageBubble = assistantMessage.querySelector('.message-bubble');
+                                if (parsed.error) {
+                                    throw new Error(parsed.error.message);
                                 }
 
-                                const content = parsed.choices[0].delta.content;
-                                currentChunkContent += content;
-                                hasReceivedContent = true;
-                                lastContentTime = Date.now();
+                                if (parsed.choices && parsed.choices[0].delta.content) {
+                                    if (currentTypingIndicator) {
+                                        currentTypingIndicator.remove();
+                                        currentTypingIndicator = null;
+                                        typingShown = false;
+                                    }
 
-                                messageBubble.innerHTML = marked.parse(currentChunkContent);
-                                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                            } else if (parsed.choices && parsed.choices[0].delta) {
-                                lastContentTime = Date.now();
+                                    if (!assistantMessage) {
+                                        typingIndicator.remove();
+                                        assistantMessage = addMessage('assistant', '');
+                                        messageBubble = assistantMessage.querySelector('.message-bubble');
+                                    }
 
-                                if (!assistantMessage) {
-                                    typingIndicator.remove();
-                                    assistantMessage = addMessage('assistant', '');
-                                    messageBubble = assistantMessage.querySelector('.message-bubble');
+                                    const content = parsed.choices[0].delta.content;
+                                    currentChunkContent += content;
+                                    hasReceivedContent = true;
+                                    lastContentTime = Date.now();
+
+                                    messageBubble.innerHTML = marked.parse(currentChunkContent);
+                                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                                } else if (parsed.choices && parsed.choices[0].delta) {
+                                    lastContentTime = Date.now();
+
+                                    if (!assistantMessage) {
+                                        typingIndicator.remove();
+                                        assistantMessage = addMessage('assistant', '');
+                                        messageBubble = assistantMessage.querySelector('.message-bubble');
+                                    }
                                 }
-                            }
-                        } catch (e) {
-                            if (data !== '[DONE]') {
-                                console.error('Error parsing chunk:', e);
+                            } catch (e) {
+                                if (data !== '[DONE]') {
+                                    console.error('Error parsing chunk:', e);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            clearInterval(typingCheckInterval);
+                clearInterval(typingCheckInterval);
 
-            if (currentTypingIndicator) {
-                currentTypingIndicator.remove();
-            }
-
-            if (currentChunkContent.trim()) {
-                conversationHistory.push({
-                    role: 'assistant',
-                    content: currentChunkContent
-                });
-            }
-
-            if (!hasReceivedContent) {
-                if (assistantMessage) {
-                    assistantMessage.remove();
+                if (currentTypingIndicator) {
+                    currentTypingIndicator.remove();
                 }
+
+                if (currentChunkContent.trim()) {
+                    conversationHistory.push({
+                        role: 'assistant',
+                        content: currentChunkContent
+                    });
+                }
+
+                if (!hasReceivedContent) {
+                    if (assistantMessage) {
+                        assistantMessage.remove();
+                    }
+                }
+
+                await loadConversations();
+
+            } catch (error) {
+                console.error('Error:', error);
+                typingIndicator.remove();
+                addMessage('assistant', `Error: ${error.message}`);
+            } finally {
+                isStreaming = false;
+                sendButton.disabled = false;
+                messageInput.focus();
             }
+        }
 
-            await loadConversations();
+        async function sendMessage() {
+            const message = messageInput.value.trim();
 
-        } catch (error) {
-            console.error('Error:', error);
-            typingIndicator.remove();
-            addMessage('assistant', `Error: ${error.message}`);
-        } finally {
-            isStreaming = false;
-            sendButton.disabled = false;
+            if (!message || isStreaming) return;
+
+            messageInput.value = '';
+            await streamResponse(message);
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !isStreaming) {
+                sendMessage();
+            }
+        });
+
+        window.addEventListener('load', () => {
             messageInput.focus();
-        }
-    }
-
-    async function sendMessage() {
-        const message = messageInput.value.trim();
-
-        if (!message || isStreaming) return;
-
-        messageInput.value = '';
-        await streamResponse(message);
-    }
-
-    sendButton.addEventListener('click', sendMessage);
-
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !isStreaming) {
-            sendMessage();
-        }
-    });
-
-    window.addEventListener('load', () => {
-        messageInput.focus();
-        loadConversations();
-    });
-</script>
+            loadConversations();
+        });
+    </script>
 </body>
+
 </html>
